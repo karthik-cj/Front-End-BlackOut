@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Realtime location tracker</title>
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"
+      charset="utf-8"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+  </body>
+</html>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js"
+  charset="utf-8"
+></script>
+<script>
+  let fakeLat1 = 9.729370999999996;
+  let fakeLong1 = 76.72678700000007;
+  let fakeLat2 = 9.726871;
+  let fakeLong2 = 76.724587;
+  let fakeLat3 = 9.728971;
+  let fakeLong3 = 76.729587;
+
+  ////////////////////////////////////////////
+
+  let map = L.map("map").setView([9.727471, 76.727087], 17);
+  L.control.locate().addTo(map);
+  let osm = L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
+    maxZoom: 20,
+    subdomains: ["mt0", "mt1", "mt2", "mt3"],
+  });
+  osm.addTo(map);
+
+  if (!navigator.geolocation) {
+    console.log("Your browser doesn't support geolocation feature!");
+  } else {
+    setInterval(() => {
+      navigator.geolocation.getCurrentPosition(getPosition);
+    }, 2000);
+  }
+
+  let myIcon = L.icon({
+    iconUrl: "rgb.png",
+    iconSize: [40, 40],
+  });
+
+  let marker1, marker2, marker3, marker4;
+
+  const getPosition = async (position) => {
+    fakeLat1 = fakeLat1 - 0.0002;
+    fakeLong2 = fakeLong2 + 0.0002;
+    fakeLat3 = fakeLat3 - 0.0002;
+    fakeLong3 = fakeLong3 - 0.0002;
+
+    var resp = await fetch(
+      "https://location-blackout.herokuapp.com/get/location"
+    );
+    let data = await resp.json();
+    // console.log(data);
+
+    let oriLat = data.latitude;
+    let oriLong = data.longitude;
+
+    console.log(fakeLat1, fakeLong2, fakeLat3, fakeLong3);
+
+    if (marker1) {
+      map.removeLayer(marker1);
+    }
+
+    if (marker2) {
+      map.removeLayer(marker2);
+    }
+
+    if (marker3) {
+      map.removeLayer(marker3);
+    }
+
+    if (marker4) {
+      map.removeLayer(marker4);
+    }
+
+    marker1 = L.marker([oriLat, oriLong], {
+      icon: myIcon,
+      draggable: false,
+    });
+
+    marker2 = L.marker([fakeLat1, fakeLong1], {
+      icon: myIcon,
+      draggable: false,
+    });
+
+    marker3 = L.marker([fakeLat2, fakeLong2], {
+      icon: myIcon,
+      draggable: false,
+    });
+
+    marker4 = L.marker([fakeLat3, fakeLong3], {
+      icon: myIcon,
+      draggable: false,
+    });
+
+    var featureGroup = L.featureGroup([
+      marker1,
+      marker2,
+      marker3,
+      marker4,
+    ]).addTo(map);
+    //map.fitBounds(featureGroup.getBounds());
+  };
+</script>

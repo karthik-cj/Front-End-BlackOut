@@ -54,25 +54,27 @@
 
   ////////////////////////////////////////////
 
-  let map = L.map("map").setView([9.727471, 76.727087], 17);
+  let map = L.map("map").setView([9.727471, 76.727087], 18);
   L.control.locate().addTo(map);
-  let osm = L.tileLayer("http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", {
-    maxZoom: 20,
+
+  googleSat = L.tileLayer("http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", {
+    maxNativeZoom: 18,
+    maxZoom: 22,
     subdomains: ["mt0", "mt1", "mt2", "mt3"],
   });
-  osm.addTo(map);
+  googleSat.addTo(map);
 
   if (!navigator.geolocation) {
     console.log("Your browser doesn't support geolocation feature!");
   } else {
     setInterval(() => {
       navigator.geolocation.getCurrentPosition(getPosition);
-    }, 2000);
+    }, 30000);
   }
 
   let myIcon = L.icon({
     iconUrl: "rgb.png",
-    iconSize: [40, 40],
+    iconSize: [30, 30],
   });
 
   let marker1, marker2, marker3, marker4;

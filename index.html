@@ -80,6 +80,21 @@
     iconSize: [30, 30],
   });
 
+  let myIcon1 = L.icon({
+    iconUrl: "black.png",
+    iconSize: [30, 30],
+  });
+
+  let myIcon2 = L.icon({
+    iconUrl: "blue.png",
+    iconSize: [30, 30],
+  });
+
+  let myIcon3 = L.icon({
+    iconUrl: "red.png",
+    iconSize: [30, 30],
+  });
+
   let marker1, marker2, marker3, marker4;
 
   const getPosition = async (position) => {
@@ -89,7 +104,7 @@
     fakeLong3 = fakeLong3 - 0.0002;
 
     var resp = await fetch(
-      "https://location-blackout.herokuapp.com/get/location"
+      "https://back-end-blackout-production.up.railway.app/get/location"
     );
     let data = await resp.json();
     // console.log(data);
@@ -121,17 +136,17 @@
     });
 
     marker2 = L.marker([fakeLat1, fakeLong1], {
-      icon: myIcon,
+      icon: myIcon1,
       draggable: false,
     });
 
     marker3 = L.marker([fakeLat2, fakeLong2], {
-      icon: myIcon,
+      icon: myIcon2,
       draggable: false,
     });
 
     marker4 = L.marker([fakeLat3, fakeLong3], {
-      icon: myIcon,
+      icon: myIcon3,
       draggable: false,
     });
 
